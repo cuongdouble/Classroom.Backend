@@ -47,7 +47,7 @@ namespace Classroom.Backend
                 opt.User.RequireUniqueEmail = true;
 
                 opt.Lockout.AllowedForNewUsers = true;
-                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
+                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromHours(4);
                 opt.Lockout.MaxFailedAccessAttempts = 10;
             })
              .AddEntityFrameworkStores<RepositoryContext>()
