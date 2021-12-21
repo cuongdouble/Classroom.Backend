@@ -5,9 +5,13 @@ using System.Threading.Tasks;
 
 namespace Classroom.Backend.Entity.Models
 {
-    public class Teacher : User
+    public class Teacher
     {
-        public override AccountType AccountType => AccountType.Teacher;
+        public Guid Id { get; set; }
+
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
 
         public List<Assignment> Assignments { get; set; }
 

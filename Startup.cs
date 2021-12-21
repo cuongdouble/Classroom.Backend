@@ -1,5 +1,7 @@
 using Classroom.Backend.Entity;
 using Classroom.Backend.Entity.Models;
+using Classroom.Backend.Installers;
+using Classroom.Backend.Services.EmailService;
 using CompanyEmployees.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -36,19 +38,19 @@ namespace Classroom.Backend
             services.ConfigureCors();
             services.ConfigureIISIntegration();
             services.ConfigureSqlContext();
-            services.ConfigureRepositoryManager();
+            services.ConfigureServices();
             services.AddAutoMapper(typeof(Startup));
 
-            services.AddIdentity<User, IdentityRole>(opt =>
-            {
-                opt.Password.RequiredLength = 7;
-                opt.Password.RequireDigit = false;
+            var emailConfig = Configuration
+                .GetSection("EmailConfiguration")
+                .Get<EmailConfiguration>();
+            services.AddSingleton(emailConfig);
 
+            services.AddIdentity<User,Role>(opt =>
+            {
+                opt.Password.RequireDigit = false;
                 opt.User.RequireUniqueEmail = true;
 
-                opt.Lockout.AllowedForNewUsers = true;
-                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromHours(4);
-                opt.Lockout.MaxFailedAccessAttempts = 10;
             })
              .AddEntityFrameworkStores<RepositoryContext>()
              .AddDefaultTokenProviders();
@@ -60,6 +62,7 @@ namespace Classroom.Backend
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Classroom.Backend", Version = "v1" });
+                c.DocumentFilter<IgnoreTagsFilter>();
             });
         }
 
@@ -82,7 +85,7 @@ namespace Classroom.Backend
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers().RequireAuthorization(); ;
             });
         }
     }

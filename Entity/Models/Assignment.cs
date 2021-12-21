@@ -25,7 +25,7 @@ namespace Classroom.Backend.Entity.Models
 
         public Guid ClassId { get; set; }
 
-        public List<AssignmentGrade> AssignmentStudents { get; set; }
+        public List<AssignmentGrade> AssignmentGrades { get; set; }
 
         public Assignment()
         {
