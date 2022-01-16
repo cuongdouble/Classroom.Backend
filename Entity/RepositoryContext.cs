@@ -1,4 +1,5 @@
 ﻿using Classroom.Backend.Entity.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,6 +19,11 @@ namespace Classroom.Backend.Entity
 
             modelBuilder.Entity<ClassStudent>().HasKey(sc => new { sc.ClassId, sc.StudentId });
             modelBuilder.Entity<ClassTeacher>().HasKey(sc => new { sc.ClassId, sc.TeacherId });
+            var user = new User() { Email = "nhinhcaizi@gmail.com",NormalizedEmail="NHINHCAIZI@GMAIL.COM", Id = Guid.NewGuid() };
+            var password = new PasswordHasher<User>();
+            var hashed = password.HashPassword(user, "user123");
+            user.PasswordHash = hashed;
+            modelBuilder.Entity<User>().HasData(user);
         }
 
         public DbSet<Student> Students { get; set; }

@@ -30,8 +30,8 @@ namespace Classroom.Backend.Services
 
         public async Task<AuthResponseDto> Login(UserForAuthenticationDto userForAuthentication)
         {
-			var user = await _userManager.FindByNameAsync(userForAuthentication.Email);
-			if (user == null)
+            var user = await _userManager.FindByEmailAsync(userForAuthentication.Email);
+            if (user == null)
 				throw new BadRequestException("Invalid Request");
 
 			if (!await _userManager.CheckPasswordAsync(user, userForAuthentication.Password))

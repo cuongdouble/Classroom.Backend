@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Classroom.Backend.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    [Migration("20211219092927_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20211221152607_Test")]
+    partial class Test
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -199,6 +199,43 @@ namespace Classroom.Backend.Migrations
                     b.ToTable("AspNetRoles");
                 });
 
+            modelBuilder.Entity("Classroom.Backend.Entity.Models.Student", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("StudentId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("Classroom.Backend.Entity.Models.Teacher", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Teachers");
+                });
+
             modelBuilder.Entity("Classroom.Backend.Entity.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -215,22 +252,12 @@ namespace Classroom.Backend.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("TEXT");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("INTEGER");
@@ -276,7 +303,20 @@ namespace Classroom.Backend.Migrations
 
                     b.ToTable("AspNetUsers");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("User");
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("204c50a9-9f8b-4173-985a-af978290fea1"),
+                            AccessFailedCount = 0,
+                            AccountType = 0,
+                            ConcurrencyStamp = "5577dcbf-86b4-4816-9189-c614862b2551",
+                            Email = "nhinhcaizi@gmail.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAEAACcQAAAAEKqZKknaPbHMoGPu+39LnkfpfOqA9Uj+Hm++El9C7T+trqtUBQJ611PWRR6hocOgUA==",
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -378,23 +418,6 @@ namespace Classroom.Backend.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Classroom.Backend.Entity.Models.Student", b =>
-                {
-                    b.HasBaseType("Classroom.Backend.Entity.Models.User");
-
-                    b.Property<string>("StudentId")
-                        .HasColumnType("TEXT");
-
-                    b.HasDiscriminator().HasValue("Student");
-                });
-
-            modelBuilder.Entity("Classroom.Backend.Entity.Models.Teacher", b =>
-                {
-                    b.HasBaseType("Classroom.Backend.Entity.Models.User");
-
-                    b.HasDiscriminator().HasValue("Teacher");
-                });
-
             modelBuilder.Entity("Classroom.Backend.Entity.Models.Assignment", b =>
                 {
                     b.HasOne("Classroom.Backend.Entity.Models.Teacher", null)
@@ -407,11 +430,11 @@ namespace Classroom.Backend.Migrations
             modelBuilder.Entity("Classroom.Backend.Entity.Models.AssignmentGrade", b =>
                 {
                     b.HasOne("Classroom.Backend.Entity.Models.Assignment", null)
-                        .WithMany("AssignmentStudents")
+                        .WithMany("AssignmentGrades")
                         .HasForeignKey("AssignmentId");
 
                     b.HasOne("Classroom.Backend.Entity.Models.Student", null)
-                        .WithMany("AssignmentStudents")
+                        .WithMany("AssignmentGrades")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -515,17 +538,12 @@ namespace Classroom.Backend.Migrations
 
             modelBuilder.Entity("Classroom.Backend.Entity.Models.Assignment", b =>
                 {
-                    b.Navigation("AssignmentStudents");
-                });
-
-            modelBuilder.Entity("Classroom.Backend.Entity.Models.User", b =>
-                {
-                    b.Navigation("Comments");
+                    b.Navigation("AssignmentGrades");
                 });
 
             modelBuilder.Entity("Classroom.Backend.Entity.Models.Student", b =>
                 {
-                    b.Navigation("AssignmentStudents");
+                    b.Navigation("AssignmentGrades");
 
                     b.Navigation("ClassStudents");
                 });
@@ -535,6 +553,11 @@ namespace Classroom.Backend.Migrations
                     b.Navigation("Assignments");
 
                     b.Navigation("ClassTeachers");
+                });
+
+            modelBuilder.Entity("Classroom.Backend.Entity.Models.User", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }
